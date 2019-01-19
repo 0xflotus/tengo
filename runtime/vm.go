@@ -1271,6 +1271,7 @@ func (v *VM) importModule(compiledModule *objects.CompiledModule) error {
 
 	mmValue := make(map[string]objects.Object)
 	for name, index := range compiledModule.Globals {
+		// TODO: should it exclude ImmutableMap objects for imported modules?
 		mmValue[name] = *moduleVM.globals[index]
 	}
 

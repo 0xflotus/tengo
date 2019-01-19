@@ -45,6 +45,27 @@ if write_file("./temp", "foobar") {
 os.remove("./temp")
 `, "foobar")
 
+	expectWithUserModules(t, `
+mod1 := import("mod1")
+os := import("os")
+file := os.open(mod1.file.name())
+buf := bytes(100)
+res := file.read(buf)
+if res {
+	out = string(buf[:res])
+}
+os.remove(mod1.file.name())
+`, "foo bar", map[string]string{
+		"mod1": `
+os := import("os")
+file := os.create("./temp") 
+if file {
+	file.write_string("foo bar")
+	file.close()
+}
+`,
+	})
+
 	// exec.command
 	expect(t, `
 exec := import("exec")
